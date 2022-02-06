@@ -17,7 +17,6 @@ public class CurlTest {
     @Test
     public void failedTest() {
         RemoteCalls remoteCalls = CurlBuilder.build(RemoteCalls.class);
-
         remoteCalls.call_one(new CurlCallBack() {
             @Override
             public void onSuccess(int responseCode, String successResponse) {
@@ -29,7 +28,6 @@ public class CurlTest {
             }
         });
     }
-
 
     public interface RemoteCalls {
         @Curl(cmd = "curl http://localhost:8080/test -H api-key:12345")
