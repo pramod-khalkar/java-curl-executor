@@ -13,7 +13,9 @@ public class CurlTest {
 
     @Test
     public void failedTest() {
-        CurlBuilder.build(RemoteCalls.class).call_one(new CurlCallBack() {
+        RemoteCalls remoteCalls = CurlBuilder.build(RemoteCalls.class);
+
+        remoteCalls.call_one(new CurlCallBack() {
             @Override
             public void onSuccess(int responseCode, String successResponse) {
                 //Assertions.assertEquals(401, responseCode);
