@@ -1,12 +1,20 @@
 plugins {
-    id 'java'
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+    id 'io.github.gradle-nexus.publish-plugin' version '1.1.0'
 }
 
-group 'com.github.curl'
+group 'io.github.pramod-khalkar'
+archivesBaseName = "jcurl"
 version '0.0.1'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 repositories {
     mavenCentral()
+    mavenLocal()
 }
 
 dependencies {
@@ -17,4 +25,85 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    testLogging {
+        events "standardOut", "passed", "skipped", "failed"
+        showExceptions true
+        exceptionFormat "full"
+        showCauses true
+        showStackTraces true
+
+        afterSuite { desc, result ->
+            if (!desc.parent) { // will match the outermost suite
+                def output = "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)"
+                def startItem = '|  ', endItem = '  |'
+                def repeatLength = startItem.length() + output.length() + endItem.length()
+                println('\n' + ('-' * repeatLength) + '\n' + startItem + output + endItem + '\n' + ('-' * repeatLength))
+            }
+        }
+    }
 }
+
+ext.genOutputDir = file("$buildDir/generated-resources")
+
+task generateVersionTxt() {
+    ext.outputFile = file("$genOutputDir/version.txt")
+    outputs.file(outputFile)
+    doLast {
+        outputFile.text = """GroupId: ${project.group} Name: ${project.name} Version: $version Build-time: ${java.time.LocalDateTime.now()}"""
+    }
+}
+
+sourceSets.main.output.dir genOutputDir, builtBy: generateVersionTxt
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+nexusPublishing {
+    repositories {
+        sonatype {  //only for users registered in Sonatype after 24 Feb 2021
+            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
+        }
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from(components.java)
+            pom {
+                name = 'jcurl'
+                description = 'As it is curl command execution in java (basic support)'
+                url = 'https://github.com/pramod-khalkar/java-curl-executor'
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'pramod-khalkar'
+                        name = 'Pramod Khalkar'
+                    }
+                }
+                scm {
+                    url = 'https://github.com/pramod-khalkar/java-curl-executor'
+                    connection = 'scm:git://github.com/pramod-khalkar/java-curl-executor.git'
+                    developerConnection = 'scm:git://github.com/pramod-khalkar/java-curl-executor.git'
+                }
+            }
+        }
+    }
+}
+
+signing {
+    //sign publishing.publications.mavenJava
+    def signingKey = findProperty("signingKey")
+    def signingPassword = findProperty("signingPassword")
+    useInMemoryPgpKeys(signingKey, signingPassword)
+    sign publishing.publications.mavenJava
+}
+

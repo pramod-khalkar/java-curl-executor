@@ -1,8 +1,8 @@
 package com.github.curl;
 
-import com.github.curl.Curl;
-import com.github.curl.CurlBuilder;
-import com.github.curl.CurlCallBack;
+import io.github.jcurl.Curl;
+import io.github.jcurl.CurlBuilder;
+import io.github.jcurl.CurlCallBack;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -21,7 +21,6 @@ public class CurlTest {
         remoteCalls.call_one(new CurlCallBack() {
             @Override
             public void onSuccess(int responseCode, String successResponse) {
-                //Assertions.assertEquals(401, responseCode);
             }
 
             @Override

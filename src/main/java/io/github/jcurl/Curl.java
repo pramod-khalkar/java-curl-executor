@@ -1,4 +1,4 @@
-package com.github.curl;
+package io.github.jcurl;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

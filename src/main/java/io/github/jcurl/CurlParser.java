@@ -1,4 +1,4 @@
-package com.github.curl;
+package io.github.jcurl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
