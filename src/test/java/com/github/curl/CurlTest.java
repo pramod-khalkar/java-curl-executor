@@ -1,5 +1,8 @@
-package org.curl;
+package com.github.curl;
 
+import com.github.curl.Curl;
+import com.github.curl.CurlBuilder;
+import com.github.curl.CurlCallBack;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -23,7 +26,7 @@ public class CurlTest {
 
             @Override
             public void onError(int responseCode, String errorResponse) {
-                Assertions.assertEquals(401, responseCode);
+                Assertions.assertEquals(502, responseCode);
             }
         });
     }

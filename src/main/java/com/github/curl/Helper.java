@@ -1,4 +1,4 @@
-package org.curl;
+package com.github.curl;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

@@ -1,6 +1,6 @@
-package org.curl;
+package com.github.curl;
 
-import static org.curl.Helper.formatSpecifierCount;
+import static com.github.curl.Helper.formatSpecifierCount;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;

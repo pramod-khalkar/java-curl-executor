@@ -2,8 +2,8 @@ plugins {
     id 'java'
 }
 
-group 'java.curl'
-version '0.0.1-SNAPSHOT'
+group 'com.github.curl'
+version '0.0.1'
 
 repositories {
     mavenCentral()

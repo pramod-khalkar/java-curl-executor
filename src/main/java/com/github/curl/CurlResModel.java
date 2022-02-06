@@ -1,4 +1,4 @@
-package org.curl;
+package com.github.curl;
 
 /**
  * Date: 05/02/22

@@ -1,4 +1,4 @@
-package org.curl;
+package com.github.curl;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -65,8 +65,12 @@ class CurlExecution {
             response = readFromStream(connection.getInputStream());
             return new CurlResModel(connection.getResponseCode(), response, true);
         } catch (IOException ex) {
-            response = readFromStream(connection.getErrorStream());
-            return new CurlResModel(connection.getResponseCode(), response, false);
+            if (connection.getErrorStream() == null) {
+                return new CurlResModel(502, ex.getMessage(), false);
+            } else {
+                response = readFromStream(connection.getErrorStream());
+                return new CurlResModel(connection.getResponseCode(), response, false);
+            }
         }
     }
 
