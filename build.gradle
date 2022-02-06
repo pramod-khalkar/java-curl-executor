@@ -7,7 +7,7 @@ plugins {
 
 group 'io.github.pramod-khalkar'
 archivesBaseName = "jcurl"
-version '0.0.1'
+version '0.0.2-SNAPSHOT'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
