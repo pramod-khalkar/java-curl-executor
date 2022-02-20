@@ -1,4 +1,4 @@
-package io.github.jcurl;
+package io.github.curl;
 
 /**
  * Date: 05/02/22
@@ -6,8 +6,7 @@ package io.github.jcurl;
  * This file is project specific to java-curl-executor
  * Author: Pramod Khalkar
  */
+@FunctionalInterface
 public interface CurlCallBack {
-    void onSuccess(int responseCode, String successResponse);
-
-    void onError(int responseCode, String errorResponse);
+    void onResult(CurlResponse result);
 }

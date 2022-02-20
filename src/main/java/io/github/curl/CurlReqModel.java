@@ -1,5 +1,6 @@
-package io.github.jcurl;
+package io.github.curl;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -15,6 +16,8 @@ class CurlReqModel {
     private String dataType;
     private Data data;
     private BasicAuth basicAuth;
+    private Long connectionTimeout;
+    private Long readTimeout;
 
     public String getUrl() {
         return url;
@@ -36,8 +39,13 @@ class CurlReqModel {
         return headers;
     }
 
-    public void setHeaders(Map<String, String> headers) {
-        this.headers = headers;
+    public void addInHeader(String key, String value) {
+        if (this.headers != null) {
+            this.headers.put(key, value);
+        } else {
+            this.headers = new HashMap<>();
+            this.headers.put(key, value);
+        }
     }
 
     public String getDataType() {
@@ -60,13 +68,34 @@ class CurlReqModel {
         return basicAuth;
     }
 
-    public void setBasicAuth(BasicAuth basicAuth) {
-        this.basicAuth = basicAuth;
+    public void setBasicAuth(String user, String password) {
+        this.basicAuth = new BasicAuth(user, password);
+    }
+
+    public Long getConnectionTimeout() {
+        return connectionTimeout;
+    }
+
+    public void setConnectionTimeout(Long connectionTimeout) {
+        this.connectionTimeout = connectionTimeout;
+    }
+
+    public Long getReadTimeout() {
+        return readTimeout;
+    }
+
+    public void setReadTimeout(Long readTimeout) {
+        this.readTimeout = readTimeout;
     }
 
     static class BasicAuth {
         private String user;
         private String password;
+
+        public BasicAuth(String user, String password) {
+            this.user = user;
+            this.password = password;
+        }
 
         public String getUser() {
             return user;
@@ -83,11 +112,20 @@ class CurlReqModel {
         public void setPassword(String password) {
             this.password = password;
         }
+
+        public boolean isPresent() {
+            return this.user != null && this.password != null;
+        }
+
+        public String getJointUserPass() {
+            return String.format("%s:%s", this.user, this.password);
+        }
     }
 
     static class Data {
         private Object files;
         private Object ascii;
+        private Boolean isFormData;
 
         public Object getFiles() {
             return files;
@@ -103,6 +141,32 @@ class CurlReqModel {
 
         public void setAscii(Object ascii) {
             this.ascii = ascii;
+        }
+
+        public void setFormData(Boolean formData) {
+            isFormData = formData;
+        }
+
+        public Boolean isFormData() {
+            return isFormData;
+        }
+    }
+
+    static class FileData {
+        private final String formKey;
+        private final String absPath;
+
+        FileData(String formKey, String absPath) {
+            this.formKey = formKey;
+            this.absPath = absPath;
+        }
+
+        public String getAbsPath() {
+            return absPath;
+        }
+
+        public String getFormKey() {
+            return formKey;
         }
     }
 }

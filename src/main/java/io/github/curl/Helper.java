@@ -1,4 +1,4 @@
-package io.github.jcurl;
+package io.github.curl;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,7 +13,7 @@ final class Helper {
 
     private final static String FORMAT_SPECIFIER = "%(\\d+\\$)?([-#+ 0,(\\<]*)?(\\d+)?(\\.\\d+)?([tT])?([a-zA-Z%])";
 
-    public static int formatSpecifierCount(String str) {
+    static int formatSpecifierCount(String str) {
         Pattern pattern = Pattern.compile(FORMAT_SPECIFIER);
         Matcher matcher = pattern.matcher(str);
         int count = 0;
@@ -21,5 +21,13 @@ final class Helper {
             count++;
         }
         return count;
+    }
+
+    static long parseInt(String number) {
+        try {
+            return Long.parseLong(number);
+        } catch (Exception ex) {
+            throw new RuntimeException(String.format("%s is not a number", number));
+        }
     }
 }

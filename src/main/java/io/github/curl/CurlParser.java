@@ -1,4 +1,4 @@
-package io.github.jcurl;
+package io.github.curl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 /**
@@ -46,7 +47,7 @@ final class CurlParser {
         CurlParser instance = new CurlParser(cmd);
         Map<String, List<String>> parsed = instance.parseCommand();
         if (parsed.get("_") == null || parsed.get("_").size() == 0 || !parsed.get("_").get(0).equals("curl")) {
-            throw new Exception(String.format("Not a curl command %s", cmd));
+            throw new RuntimeException(String.format("Not a curl command %s", cmd));
         }
         CurlReqModel httpRequest = instance.extractHttpRequest(parsed);
         return new CurlExecution(httpRequest);
@@ -64,9 +65,8 @@ final class CurlParser {
         }
         Map<String, List<String>> result = new HashMap<>();
         result.put("_", new ArrayList<>());
-        String token;
         input = input.trim();
-        if (input.length() > 2 && (input.charAt(0) == '$' || input.charAt(0) == '#') && whiteSpace(input.charAt(1))) {
+        if (input.length() > 2 && (input.charAt(0) == '$' || input.charAt(0) == '#') && isWhiteSpace(input.charAt(1))) {
             input = input.substring(1).trim();
         }
         for (; cursor < input.length(); cursor++) {
@@ -77,24 +77,23 @@ final class CurlParser {
                     //for long flag settings e.g. --header
                     cursor += 2; // skip leading dashes
                     String flagName = moveToNextString('=');
-                    if (isBoolFlagPresent(flagName.charAt(0))) {
+                    if (!result.containsKey(flagName)) {
+                        result.put(flagName, new ArrayList<>());
+                    }
+                    if (isBoolFlagPresent(flagName)) {
                         addOrUpdateResult(result, flagName, "true");
                     } else {
-                        if (!result.containsKey(flagName)) {
-                            result.put(flagName, new ArrayList<>());
-                        } else {
-                            addOrUpdateResult(result, flagName, moveToNextString());
-                        }
+                        addOrUpdateResult(result, flagName, moveToNextString());
                     }
                 } else {
                     cursor++; // skip leading hyphen
-                    while (cursor < input.length() && !whiteSpace(input.charAt(cursor))) {
+                    while (cursor < input.length() && !isWhiteSpace(input.charAt(cursor))) {
                         char flagName = input.charAt(cursor);
                         if (!result.containsKey(String.valueOf(flagName))) {
                             result.put(String.valueOf(flagName), new ArrayList<>());
                         }
                         cursor++; // skip the flag name
-                        if (isBoolFlagPresent(flagName)) {
+                        if (isBoolFlagPresent(String.valueOf(flagName))) {
                             addOrUpdateResult(result, String.valueOf(flagName), "true");
                         } else {
                             addOrUpdateResult(result, String.valueOf(flagName), moveToNextString());
@@ -109,16 +108,16 @@ final class CurlParser {
         return result;
     }
 
-    private boolean whiteSpace(Character charValue) {
+    private boolean isWhiteSpace(Character charValue) {
         return charValue == ' ' || charValue == '\t' || charValue == '\n' || charValue == '\r';
     }
 
     private void skipWhiteSpace() {
         for (; cursor < input.length(); cursor++) {
-            while (input.charAt(cursor) == '\\' && (cursor < input.length() - 1 && whiteSpace(input.charAt(cursor + 1)))) {
+            while (input.charAt(cursor) == '\\' && (cursor < input.length() - 1 && isWhiteSpace(input.charAt(cursor + 1)))) {
                 cursor++;
             }
-            if (!whiteSpace(input.charAt(cursor))) {
+            if (!isWhiteSpace(input.charAt(cursor))) {
                 break;
             }
         }
@@ -137,8 +136,8 @@ final class CurlParser {
         map.put(key, list);
     }
 
-    private boolean isBoolFlagPresent(char flagName) {
-        return Arrays.stream(boolOptions).anyMatch(val -> val.equals(String.valueOf(flagName)));
+    private boolean isBoolFlagPresent(String flagName) {
+        return Arrays.asList(boolOptions).contains(flagName);
     }
 
     private String moveToNextString() {
@@ -161,7 +160,7 @@ final class CurlParser {
             }
             if (!quoted) {
                 if (!escaped) {
-                    if (whiteSpace(input.charAt(cursor))) {
+                    if (isWhiteSpace(input.charAt(cursor))) {
                         return str;
                     }
                     if (input.charAt(cursor) == '\"' || input.charAt(cursor) == '\'') {
@@ -193,104 +192,144 @@ final class CurlParser {
     }
 
     private CurlReqModel extractHttpRequest(Map<String, List<String>> cmd) {
-        CurlReqModel httpRequest = new CurlReqModel();
+        CurlReqModel curlReqModel = new CurlReqModel();
         if (cmd.containsKey("url") && cmd.get("url").size() > 0) {
-            httpRequest.setUrl(cmd.get("url").get(0));
+            curlReqModel.setUrl(cmd.get("url").get(0));
         } else if (cmd.get("_").size() > 1) {
-            httpRequest.setUrl(cmd.get("_").get(1));
+            curlReqModel.setUrl(cmd.get("_").get(1));
         }
-        if (!httpRequest.getUrl().contains("http")) {
-            httpRequest.setUrl("http://" + httpRequest.getUrl());
+        if (!curlReqModel.getUrl().contains("http")) {
+            curlReqModel.setUrl("http://" + curlReqModel.getUrl());
         }
         // TODO: 05/02/22 need to clarify
         if (cmd.containsKey("H") || cmd.containsKey("header")) {
-            Map<String, String> headers = new HashMap<>();
+            //Map<String, String> headers = new HashMap<>();
             if (cmd.get("H") != null) {
-                cmd.get("H").forEach(h -> parseHeader(h, headers));
+                cmd.get("H").forEach(h -> parseHeader(h, curlReqModel));
             }
             if (cmd.get("header") != null) {
-                cmd.get("header").forEach(h -> parseHeader(h, headers));
+                cmd.get("header").forEach(h -> parseHeader(h, curlReqModel));
             }
-            httpRequest.setHeaders(headers);
         }
         if (cmd.containsKey("I") || cmd.containsKey("head")) {
-            httpRequest.setMethod("HEAD");
+            curlReqModel.setMethod("HEAD");
         }
         if (cmd.containsKey("request") && cmd.get("request").size() > 0) {
-            httpRequest.setMethod(cmd.get("request").get(0).toUpperCase());
+            curlReqModel.setMethod(cmd.get("request").get(0).toUpperCase());
         } else if (cmd.containsKey("X") && cmd.get("X").size() > 0) {
-            httpRequest.setMethod(cmd.get("X").get(cmd.get("X").size() - 1).toLowerCase(Locale.ROOT));
+            curlReqModel.setMethod(cmd.get("X").get(cmd.get("X").size() - 1).toLowerCase(Locale.ROOT));
         } else if (cmd.containsKey("data-binary") && cmd.get("data-binary").size() > 0) {
-            httpRequest.setMethod("POST");
-            httpRequest.setDataType("raw");
+            curlReqModel.setMethod("POST");
+            curlReqModel.setDataType("raw");
+        }
+
+        if (cmd.containsKey("connect-timeout")) {
+            List<String> values = cmd.get("connect-timeout");
+            if (values != null && values.size() > 0) {
+                long timeoutValue = Helper.parseInt(values.get(values.size() - 1));
+                curlReqModel.setConnectionTimeout(TimeUnit.SECONDS.toMillis(timeoutValue));
+            }
+        }
+
+        if (cmd.containsKey("max-time")) {
+            List<String> values = cmd.get("max-time");
+            if (values != null && values.size() > 0) {
+                long readTimeoutValue = Helper.parseInt(values.get(values.size() - 1));
+                curlReqModel.setReadTimeout(TimeUnit.SECONDS.toMillis(readTimeoutValue));
+            }
         }
 
         List<String> dataAscii = new ArrayList<>();
-        List<String> dataFiles = new ArrayList<>();
+        List<CurlReqModel.FileData> dataFiles = new ArrayList<>();
         if (cmd.containsKey("d")) {
-            loadData(httpRequest, cmd.get("d"), dataFiles, dataAscii);
+            loadData(curlReqModel, cmd.get("d"), dataFiles, dataAscii);
         }
         if (cmd.containsKey("data")) {
-            loadData(httpRequest, cmd.get("data"), dataFiles, dataAscii);
+            loadData(curlReqModel, cmd.get("data"), dataFiles, dataAscii);
         }
         if (cmd.containsKey("data-binary")) {
-            loadData(httpRequest, cmd.get("data-binary"), dataFiles, dataAscii);
+            loadData(curlReqModel, cmd.get("data-binary"), dataFiles, dataAscii);
         }
+
         CurlReqModel.Data data = new CurlReqModel.Data();
+        if (cmd.containsKey("form")) {
+            if (curlReqModel.getHeaders() == null || !curlReqModel.getHeaders().containsKey("Content-Type")) {
+                String boundary = Long.toHexString(System.currentTimeMillis());
+                curlReqModel.addInHeader("Content-Type", "multipart/form-data;boundary=" + boundary);
+            }
+            data.setFormData(true);
+            loadData(curlReqModel, cmd.get("form"), dataFiles, dataAscii,true);
+        }
         if (dataAscii.size() > 0) {
             data.setAscii(dataAscii);
-            httpRequest.setData(data);
+            curlReqModel.setData(data);
         }
         if (dataFiles.size() > 0) {
             data.setFiles(dataFiles);
-            httpRequest.setData(data);
+            curlReqModel.setData(data);
         }
 
-        String basicAuthSting = "";
+        String basicAuthSting = null;
         if (cmd.containsKey("user") && cmd.get("user").size() > 0) {
             basicAuthSting = cmd.get("user").get(cmd.get("user").size() - 1);
         } else if (cmd.containsKey("u") && cmd.get("u").size() > 0) {
             basicAuthSting = cmd.get("u").get(cmd.get("u").size() - 1);
         }
-        int basicAuthSplit = basicAuthSting.indexOf(":");
-        CurlReqModel.BasicAuth basicAuth = new CurlReqModel.BasicAuth();
-        if (basicAuthSplit > -1) {
-            basicAuth.setUser(basicAuthSting.substring(0, basicAuthSplit));
-            basicAuth.setPassword(basicAuthSting.substring(basicAuthSplit + 1));
-            httpRequest.setBasicAuth(basicAuth);
-        } else {
-            basicAuth.setUser(basicAuthSting);
-            basicAuth.setPassword("<password>");
+        if (basicAuthSting != null) {
+            int basicAuthSplit = basicAuthSting.indexOf(":");
+            if (basicAuthSplit > -1) {
+                curlReqModel.setBasicAuth(basicAuthSting.substring(0, basicAuthSplit), basicAuthSting.substring(basicAuthSplit + 1));
+            } else {
+                curlReqModel.setBasicAuth(basicAuthSting, "<password>");
+            }
         }
-        if (httpRequest.getMethod() == null || httpRequest.getMethod().equals("")) {
-            httpRequest.setMethod("GET");
+        if (curlReqModel.getMethod() == null || curlReqModel.getMethod().equals("")) {
+            curlReqModel.setMethod("GET");
         }
-        return httpRequest;
+        return curlReqModel;
     }
 
     private void loadData(CurlReqModel httpRequest,
                           List<String> data,
-                          List<String> dataFiles,
-                          List<String> dataAscii) {
+                          List<CurlReqModel.FileData> dataFiles,
+                          List<String> dataAscii){
+        loadData(httpRequest, data, dataFiles, dataAscii,false);
+    }
+
+    private void loadData(CurlReqModel httpRequest,
+                          List<String> data,
+                          List<CurlReqModel.FileData> dataFiles,
+                          List<String> dataAscii, boolean isFormDataWithKey) {
         if (httpRequest.getMethod() == null || httpRequest.getMethod().equals("")) {
             httpRequest.setMethod("POST");
         }
-        if (!httpRequest.getHeaders().containsKey("Content-Type")) {
-            httpRequest.getHeaders().put("Content-Type", "application/x-www-form-urlencoded");
+        if (httpRequest.getHeaders() == null || !httpRequest.getHeaders().containsKey("Content-Type")) {
+            httpRequest.addInHeader("Content-Type", "application/x-www-form-urlencoded");
         }
         for (String data_ : data) {
-            if (data_.length() > 0 && data_.charAt(0) == '@') {
-                dataFiles.add(data_.substring(1));
+            if (isFormDataWithKey || (data_.length() > 0 && data_.charAt(0) == '@')) {
+                if (isFormDataWithKey) {
+                    String[] keyValue = data_.split("=");
+                    CurlReqModel.FileData fData;
+                    if (keyValue.length == 2) {
+                        fData = new CurlReqModel.FileData(keyValue[0], keyValue[1].substring(1));
+                    } else {
+                        fData = new CurlReqModel.FileData("file", keyValue[0].substring(1));
+                    }
+                    dataFiles.add(fData);
+                } else {
+                    dataFiles.add(new CurlReqModel.FileData(null, data_.substring(1)));
+                }
             } else {
                 dataAscii.add(data_);
             }
         }
     }
 
-    private void parseHeader(String header, Map<String, String> headers) {
+    private void parseHeader(String header, CurlReqModel curlReqModel) {
         if (header != null && header.contains(":")) {
             String[] headerSplit = header.split(":");
-            headers.put(headerSplit[0], headerSplit[1]);
+            curlReqModel.addInHeader(headerSplit[0], headerSplit[1]);
         }
     }
 }
