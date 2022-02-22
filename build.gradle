@@ -6,8 +6,8 @@ plugins {
 }
 
 group 'io.github.pramod-khalkar'
-archivesBaseName = "jcurl"
-version '0.0.2-SNAPSHOT'
+archivesBaseName = "java-curl-executor"
+version '0.0.2'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -20,7 +20,12 @@ repositories {
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
-    implementation 'net.bytebuddy:byte-buddy:1.12.7'
+    testImplementation "com.github.tomakehurst:wiremock-jre8:2.32.0"
+    testImplementation 'junit:junit:4.13.2'
+    testImplementation 'com.google.code.gson:gson:2.9.0'
+    testImplementation 'org.slf4j:slf4j-simple:1.7.36'
+
+    implementation 'net.bytebuddy:byte-buddy:1.12.8'
 }
 
 test {
@@ -74,7 +79,7 @@ publishing {
         mavenJava(MavenPublication) {
             from(components.java)
             pom {
-                name = 'jcurl'
+                name = 'java-curl-executor'
                 description = 'As it is curl command execution in java (basic support)'
                 url = 'https://github.com/pramod-khalkar/java-curl-executor'
                 licenses {
