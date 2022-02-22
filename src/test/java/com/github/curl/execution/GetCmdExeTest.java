@@ -20,6 +20,9 @@ import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import io.github.curl.CurlBuilder;
 import io.github.curl.CurlResponse;
 import io.github.curl.CurlStreamResponse;
+import io.github.curl.MimeTypes;
+import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Locale;
@@ -199,5 +202,53 @@ public class GetCmdExeTest {
         CurlResponse result = remoteHttpGetCalls.readTimeOutGetCall(2);
         assertEquals(-1, result.getCode());
         assertTrue(result.getBody().toLowerCase(Locale.ROOT).contains("read timed out"));
+    }
+
+    @Test
+    public void txt_file_download_test() throws IOException {
+        String filePath = "sample_data_file_1.txt";
+        stubFor(get("/download")
+                .willReturn(ok()
+                        .withBodyFile(filePath)
+                        .withHeader("Content-Type", "plain/text")));
+
+        CurlStreamResponse curlStreamResponse = remoteHttpGetCalls.txtFileDownload();
+        String contentType = curlStreamResponse.getHeaderFields().get("Content-Type").get(0);
+        String ext = MimeTypes.getExt(contentType);
+        File file = Helper.convertToFile(curlStreamResponse.getInputStream(), String.format("downloaded_text_file.%s", ext));
+        assertEquals(200, curlStreamResponse.getCode());
+        assertTrue(file.exists());
+    }
+
+    @Test
+    public void img_file_download_test() throws IOException {
+        String filePath = "image.png";
+        stubFor(get("/download")
+                .willReturn(ok()
+                        .withBodyFile(filePath)
+                        .withHeader("Content-Type", "image/png")));
+
+        CurlStreamResponse curlStreamResponse = remoteHttpGetCalls.txtFileDownload();
+        String contentType = curlStreamResponse.getHeaderFields().get("Content-Type").get(0);
+        String ext = MimeTypes.getExt(contentType);
+        File file = Helper.convertToFile(curlStreamResponse.getInputStream(), String.format("downloaded_img_file.%s", ext));
+        assertEquals(200, curlStreamResponse.getCode());
+        assertTrue(file.exists());
+    }
+
+    @Test
+    public void pdf_file_download_test() throws IOException {
+        String filePath = "sample_pdf_file.pdf";
+        stubFor(get("/download")
+                .willReturn(ok()
+                        .withBodyFile(filePath)
+                        .withHeader("Content-Type", "application/pdf")));
+
+        CurlStreamResponse curlStreamResponse = remoteHttpGetCalls.txtFileDownload();
+        String contentType = curlStreamResponse.getHeaderFields().get("Content-Type").get(0);
+        String ext = MimeTypes.getExt(contentType);
+        File file = Helper.convertToFile(curlStreamResponse.getInputStream(), String.format("downloaded_pdf_file.%s", ext));
+        assertEquals(200, curlStreamResponse.getCode());
+        assertTrue(file.exists());
     }
 }

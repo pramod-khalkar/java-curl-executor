@@ -16,6 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.github.curl.RemoteHttpPutCalls;
+import com.github.curl.utils.Helper;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import io.github.curl.CurlBuilder;
 import io.github.curl.CurlResponse;
@@ -75,7 +76,7 @@ public class PutCmdExeTest {
                 .withMultipartRequestBody(aMultipart().withName("file").withBody(containing("\"name\": \"abc\"")))
                 .willReturn(ok(RESPONSE_BODY.editMessage("file received").toString())));
 
-        String filePath = this.getClass().getClassLoader().getResource("sample_data_file_1.txt").getPath();
+        String filePath = this.getClass().getClassLoader().getResource("__files/sample_data_file_1.txt").getPath();
         CurlResponse response = remoteHttpPutCalls.uploadFile(filePath, "dummy_token");
         assertEquals(200, response.getCode());
         assertEquals(RESPONSE_BODY.editMessage("file received").toString(), response.getBody());
@@ -89,8 +90,8 @@ public class PutCmdExeTest {
                 .withMultipartRequestBody(aMultipart().withName("file_two").withBody(containing("\"city\": \"pune\"")))
                 .willReturn(ok(RESPONSE_BODY.editMessage("files received").toString())));
 
-        String filePathOne = this.getClass().getClassLoader().getResource("sample_data_file_1.txt").getPath();
-        String filePathTwo = this.getClass().getClassLoader().getResource("sample_data_file_2.txt").getPath();
+        String filePathOne = this.getClass().getClassLoader().getResource("__files/sample_data_file_1.txt").getPath();
+        String filePathTwo = this.getClass().getClassLoader().getResource("__files/sample_data_file_2.txt").getPath();
         CurlResponse response = remoteHttpPutCalls.uploadMultipartFiles(filePathOne, filePathTwo, "dummy_token");
         assertEquals(200, response.getCode());
         assertEquals(RESPONSE_BODY.editMessage("files received").toString(), response.getBody());
@@ -105,8 +106,8 @@ public class PutCmdExeTest {
                 .withMultipartRequestBody(aMultipart().withName("sample").withBody(containing("\"name\": \"abc\"")))
                 .willReturn(ok(RESPONSE_BODY.editMessage("file received").toString())));
 
-        String filePath = this.getClass().getClassLoader().getResource("sample_data_file_1.txt").getPath();
-        CurlResponse response = remoteHttpPutCalls.uploadFileWithBody(filePath, "dummy_token",REQUEST_BODY.toString());
+        String filePath = Helper.getFileAbsPath("__files/sample_data_file_1.txt");
+        CurlResponse response = remoteHttpPutCalls.uploadFileWithBody(filePath, "dummy_token", REQUEST_BODY.toString());
         assertEquals(200, response.getCode());
         assertEquals(RESPONSE_BODY.editMessage("file received").toString(), response.getBody());
     }

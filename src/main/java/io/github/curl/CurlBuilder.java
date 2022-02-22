@@ -28,6 +28,11 @@ public final class CurlBuilder {
     private CurlBuilder() {
     }
 
+    /**
+     * @param interfaceClazz : interface which has curl command's defined
+     * @param <T>
+     * @return : implementation will return for curl commands defined in interface
+     */
     public static <T> T build(Class<T> interfaceClazz) {
         //provided class should be interface only
         if (!interfaceClazz.isInterface()) {

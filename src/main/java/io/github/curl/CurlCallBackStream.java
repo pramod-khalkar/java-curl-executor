@@ -8,5 +8,8 @@ package io.github.curl;
  */
 @FunctionalInterface
 public interface CurlCallBackStream {
+    /**
+     * @param result : curl command response details with response stream
+     */
     void onResult(CurlStreamResponse result);
 }

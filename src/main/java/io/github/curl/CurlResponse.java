@@ -7,7 +7,13 @@ package io.github.curl;
  * Author: Pramod Khalkar
  */
 public class CurlResponse {
+    /**
+     * HTTP response code
+     */
     private final int code;
+    /**
+     * Response body as a string format
+     */
     private final String body;
 
     CurlResponse(int code, String body) {

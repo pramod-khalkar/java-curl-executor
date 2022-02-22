@@ -95,4 +95,16 @@ public interface RemoteHttpGetCalls {
      */
     @Curl(cmd = "curl http://localhost:8080/api/test --max-time %d")
     CurlResponse readTimeOutGetCall(Integer timeout);
+
+    /**
+     * upload download
+     */
+    @Curl(cmd = "curl http://localhost:8080/download")
+    CurlStreamResponse txtFileDownload();
+
+    @Curl(cmd = "curl http://localhost:8080/download")
+    CurlStreamResponse imgFileDownload();
+
+    @Curl(cmd = "curl http://localhost:8080/download")
+    CurlStreamResponse pdfFileDownload();
 }

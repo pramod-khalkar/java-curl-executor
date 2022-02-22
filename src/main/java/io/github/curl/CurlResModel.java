@@ -2,6 +2,8 @@ package io.github.curl;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Date: 05/02/22
@@ -12,10 +14,12 @@ import java.io.InputStream;
 class CurlResModel {
     private final int code;
     private final InputStream inputStream;
+    private final Map<String, List<String>> headerFields;
 
-    CurlResModel(int code, InputStream inputStream) {
+    CurlResModel(int code, InputStream inputStream, Map<String, List<String>> headerFields) {
         this.code = code;
         this.inputStream = inputStream;
+        this.headerFields = headerFields;
     }
 
     void response(CurlCallBack callback) {
@@ -36,13 +40,13 @@ class CurlResModel {
      * User need to close the stream after read
      */
     void streamResponse(CurlCallBackStream callBack) {
-        callBack.onResult(new CurlStreamResponse(code, inputStream));
+        callBack.onResult(new CurlStreamResponse(code, inputStream, this.headerFields));
     }
 
     /**
      * User need to close the stream after read
      */
     CurlStreamResponse streamResponse() {
-        return new CurlStreamResponse(code, inputStream);
+        return new CurlStreamResponse(code, inputStream, this.headerFields);
     }
 }

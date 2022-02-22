@@ -16,6 +16,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -59,7 +60,7 @@ class CurlExecution {
             return execution(req);
         } catch (Exception ex) {
             ex.printStackTrace();
-            return new CurlResModel(-1, createInputStream(ex));
+            return new CurlResModel(-1, createInputStream(ex), Collections.emptyMap());
         }
     }
 
@@ -104,13 +105,13 @@ class CurlExecution {
         }
 
         try {
-            return new CurlResModel(connection.getResponseCode(), connection.getInputStream());
+            return new CurlResModel(connection.getResponseCode(), connection.getInputStream(), connection.getHeaderFields());
         } catch (IOException ex) {
             if (connection.getErrorStream() == null) {
                 InputStream in = createInputStream(ex);
-                return new CurlResModel(-1, in);
+                return new CurlResModel(-1, in, Collections.emptyMap());
             } else {
-                return new CurlResModel(connection.getResponseCode(), connection.getErrorStream());
+                return new CurlResModel(connection.getResponseCode(), connection.getErrorStream(), connection.getHeaderFields());
             }
         }
     }

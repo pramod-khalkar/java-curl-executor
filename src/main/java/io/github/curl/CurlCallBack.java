@@ -8,5 +8,8 @@ package io.github.curl;
  */
 @FunctionalInterface
 public interface CurlCallBack {
+    /**
+     * @param result : curl command response details
+     */
     void onResult(CurlResponse result);
 }
