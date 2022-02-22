@@ -12,11 +12,10 @@ import java.util.stream.Collectors;
 import org.apache.commons.io.IOUtils;
 
 /**
- * Date: 17/02/22
- * Time: 3:38 PM
- * This file is project specific to java-curl-executor
- * Author: Pramod Khalkar
- */
+ * @author : Pramod Khalkar
+ * @since : 22/02/22, Tue
+ * description: This file belongs to java-curl-executor
+ **/
 final public class Helper {
     public <T> long calculateTime(Runnable runnable) {
         try {

@@ -6,11 +6,10 @@ import io.github.curl.CurlCallBack;
 import io.github.curl.CurlResponse;
 
 /**
- * Date: 17/02/22
- * Time: 2:02 AM
- * This file is project specific to java-curl-executor
- * Author: Pramod Khalkar
- */
+ * @author : Pramod Khalkar
+ * @since : 22/02/22, Tue
+ * description: This file belongs to java-curl-executor
+ **/
 public interface RemoteHttpPutCalls {
     @Curl(cmd = "curl -XPUT http://localhost:8080/api/create --basic --user %s:%s -d '%s'")
     void putCallWithAuthShortOptForData(CurlCallBack callBack, String username, String password, RequestBody requestBody);

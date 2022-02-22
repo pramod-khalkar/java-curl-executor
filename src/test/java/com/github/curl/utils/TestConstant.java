@@ -4,11 +4,10 @@ import com.github.curl.model.RequestBody;
 import com.github.curl.model.ResponseBody;
 
 /**
- * Date: 19/02/22
- * Time: 12:58 AM
- * This file is project specific to java-curl-executor
- * Author: Pramod Khalkar
- */
+ * @author : Pramod Khalkar
+ * @since : 22/02/22, Tue
+ * description: This file belongs to java-curl-executor
+ **/
 final public class TestConstant {
     public static final int DELAY_5_SECONDS = 5;
     public static final int DELAY_1000_MILLIS = 1000;

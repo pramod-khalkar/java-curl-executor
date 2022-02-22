@@ -4,11 +4,10 @@ import io.github.curl.Curl;
 import io.github.curl.CurlResponse;
 
 /**
- * Date: 17/02/22
- * Time: 5:49 PM
- * This file is project specific to java-curl-executor
- * Author: Pramod Khalkar
- */
+ * @author : Pramod Khalkar
+ * @since : 22/02/22, Tue
+ * description: This file belongs to java-curl-executor
+ **/
 interface NonPublicInterface {
     @Curl(cmd = "curl http://localhost:8080/api/test")
     CurlResponse methodCall();

@@ -1,11 +1,10 @@
 package io.github.curl;
 
 /**
- * Date: 05/02/22
- * Time: 10:41 pm
- * This file is project specific to java-curl-executor
- * Author: Pramod Khalkar
- */
+ * @author : Pramod Khalkar
+ * @since : 22/02/22, Tue
+ * description: This file belongs to java-curl-executor
+ **/
 @FunctionalInterface
 public interface CurlCallBack {
     /**

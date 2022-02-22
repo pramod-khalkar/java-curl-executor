@@ -5,11 +5,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Date: 17/02/22
- * Time: 12:06 PM
- * This file is project specific to java-curl-executor
- * Author: Pramod Khalkar
- */
+ * @author : Pramod Khalkar
+ * @since : 22/02/22, Tue
+ * description: This file belongs to java-curl-executor
+ **/
 public class CurlStreamResponse {
     /**
      * Response as a stream

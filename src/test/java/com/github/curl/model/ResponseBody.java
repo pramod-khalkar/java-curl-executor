@@ -3,11 +3,10 @@ package com.github.curl.model;
 import com.google.gson.Gson;
 
 /**
- * Date: 16/02/22
- * Time: 6:17 PM
- * This file is project specific to java-curl-executor
- * Author: Pramod Khalkar
- */
+ * @author : Pramod Khalkar
+ * @since : 22/02/22, Tue
+ * description: This file belongs to java-curl-executor
+ **/
 public class ResponseBody {
     private String message;
 

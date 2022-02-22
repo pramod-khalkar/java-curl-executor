@@ -19,18 +19,16 @@ import net.bytebuddy.implementation.bind.annotation.This;
 import net.bytebuddy.matcher.ElementMatchers;
 
 /**
- * Date: 03/02/22
- * Time: 4:33 pm
- * This file is project specific to java-curl-executor
- * Author: Pramod Khalkar
- */
+ * @author : Pramod Khalkar
+ * @since : 22/02/22, Tue
+ * description: This file belongs to java-curl-executor
+ **/
 public final class CurlBuilder {
     private CurlBuilder() {
     }
 
     /**
      * @param interfaceClazz : interface which has curl command's defined
-     * @param <T>
      * @return : implementation will return for curl commands defined in interface
      */
     public static <T> T build(Class<T> interfaceClazz) {

@@ -6,11 +6,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Date: 05/02/22
- * Time: 4:57 pm
- * This file is project specific to java-curl-executor
- * Author: Pramod Khalkar
- */
+ * @author : Pramod Khalkar
+ * @since : 22/02/22, Tue
+ * description: This file belongs to java-curl-executor
+ **/
 class CurlResModel {
     private final int code;
     private final InputStream inputStream;

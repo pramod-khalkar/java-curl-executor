@@ -4,11 +4,10 @@ import java.io.File;
 import java.net.URI;
 
 /**
- * Date: 20/02/22
- * Time: 3:14 PM
- * This file is project specific to java-curl-executor
- * Author: Pramod Khalkar
- */
+ * @author : Pramod Khalkar
+ * @since : 22/02/22, Tue
+ * description: This file belongs to java-curl-executor
+ **/
 class MetaFile extends File {
     private CurlReqModel.FileData metaData;
 

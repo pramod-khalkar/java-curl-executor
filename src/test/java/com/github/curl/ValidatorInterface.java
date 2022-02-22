@@ -4,11 +4,10 @@ import io.github.curl.Curl;
 import io.github.curl.CurlCallBack;
 
 /**
- * Date: 17/02/22
- * Time: 2:16 AM
- * This file is project specific to java-curl-executor
- * Author: Pramod Khalkar
- */
+ * @author : Pramod Khalkar
+ * @since : 22/02/22, Tue
+ * description: This file belongs to java-curl-executor
+ **/
 public class ValidatorInterface {
 
     public interface Empty {

@@ -7,11 +7,10 @@ import net.bytebuddy.implementation.bind.annotation.RuntimeType;
 import net.bytebuddy.implementation.bind.annotation.This;
 
 /**
- * Date: 17/02/22
- * Time: 10:41 PM
- * This file is project specific to java-curl-executor
- * Author: Pramod Khalkar
- */
+ * @author : Pramod Khalkar
+ * @since : 22/02/22, Tue
+ * description: This file belongs to java-curl-executor
+ **/
 public interface Interceptor {
     @RuntimeType
     Object intercept(@This Object proxy, @Origin Method method, @AllArguments Object[] args) throws Exception;

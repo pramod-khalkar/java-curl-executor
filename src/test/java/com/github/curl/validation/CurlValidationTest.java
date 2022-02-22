@@ -13,11 +13,10 @@ import io.github.curl.CurlStreamResponse;
 import org.junit.jupiter.api.Test;
 
 /**
- * Date: 17/02/22
- * Time: 2:11 AM
- * This file is project specific to java-curl-executor
- * Author: Pramod Khalkar
- */
+ * @author : Pramod Khalkar
+ * @since : 22/02/22, Tue
+ * description: This file belongs to java-curl-executor
+ **/
 @WireMockTest(httpPort = 8080)
 public class CurlValidationTest {
 

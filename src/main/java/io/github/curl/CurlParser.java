@@ -10,11 +10,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 /**
- * Date: 03/02/22
- * Time: 10:52 pm
- * This file is project specific to java-curl-executor
- * Author: Pramod Khalkar
- */
+ * @author : Pramod Khalkar
+ * @since : 22/02/22, Tue
+ * description: This file belongs to java-curl-executor
+ **/
 final class CurlParser {
     private static final Logger log = Logger.getLogger(CurlParser.class.getSimpleName());
     private final String[] boolOptions = new String[] {
@@ -258,7 +257,7 @@ final class CurlParser {
                 curlReqModel.addInHeader("Content-Type", "multipart/form-data;boundary=" + boundary);
             }
             data.setFormData(true);
-            loadData(curlReqModel, cmd.get("form"), dataFiles, dataAscii,true);
+            loadData(curlReqModel, cmd.get("form"), dataFiles, dataAscii, true);
         }
         if (dataAscii.size() > 0) {
             data.setAscii(dataAscii);
@@ -292,8 +291,8 @@ final class CurlParser {
     private void loadData(CurlReqModel httpRequest,
                           List<String> data,
                           List<CurlReqModel.FileData> dataFiles,
-                          List<String> dataAscii){
-        loadData(httpRequest, data, dataFiles, dataAscii,false);
+                          List<String> dataAscii) {
+        loadData(httpRequest, data, dataFiles, dataAscii, false);
     }
 
     private void loadData(CurlReqModel httpRequest,

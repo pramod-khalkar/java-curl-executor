@@ -12,11 +12,10 @@ import java.util.concurrent.CountDownLatch;
 import org.eclipse.jetty.http.HttpStatus;
 
 /**
- * Date: 19/02/22
- * Time: 1:17 AM
- * This file is project specific to java-curl-executor
- * Author: Pramod Khalkar
- */
+ * @author : Pramod Khalkar
+ * @since : 22/02/22, Tue
+ * description: This file belongs to java-curl-executor
+ **/
 class CallBackAssertion implements CurlCallBack, CurlCallBackStream {
     private CountDownLatch lock;
     private final boolean isOfSuccess;

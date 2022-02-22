@@ -7,11 +7,10 @@ import io.github.curl.CurlResponse;
 import io.github.curl.CurlStreamResponse;
 
 /**
- * Date: 15/02/22
- * Time: 12:02 am
- * This file is project specific to java-curl-executor
- * Author: Pramod Khalkar
- */
+ * @author : Pramod Khalkar
+ * @since : 22/02/22, Tue
+ * description: This file belongs to java-curl-executor
+ **/
 public interface RemoteHttpGetCalls {
     /**
      * Response as stream
