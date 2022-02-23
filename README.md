@@ -67,5 +67,16 @@ curl -X PUT http://localhost:8080/api/create --basic --user %s:%s --data '%s'
 curl -XPUT http://localhost:8080/api/create -H 'Authorization:Bearer %s' --data '%s'
 curl -XPUT --form 'file_one=@%s' http://localhost:8080/upload --form 'file_two=@%s' -H 'Authorization:Bearer %s'
 ````
+You can include following dependency to use this
+
+``<dependency>
+  <groupId>io.github.pramod-khalkar</groupId>
+  <artifactId>java-curl-executor</artifactId>
+  <version>0.0.2</version>
+</dependency>
+
+implementation 'io.github.pramod-khalkar:java-curl-executor:0.0.2'
+
+``
 
 Feel free to contribute and expect improvements!!
