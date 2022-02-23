@@ -84,7 +84,7 @@ class CurlExecution {
                 String data;
                 if (reqModel.getData().getAscii() instanceof List) {
                     List<Object> list = (List<Object>) reqModel.getData().getAscii();
-                    data = list.stream().map(Object::toString).collect(Collectors.joining(""));
+                    data = list.stream().map(Object::toString).collect(Collectors.joining("&"));
                 } else {
                     data = (String) reqModel.getData().getAscii();
                 }

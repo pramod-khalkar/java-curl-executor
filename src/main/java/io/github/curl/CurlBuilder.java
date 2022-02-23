@@ -29,6 +29,7 @@ public final class CurlBuilder {
 
     /**
      * @param interfaceClazz : interface which has curl command's defined
+     * @param <T>            : return curl cmd implementations class
      * @return : implementation will return for curl commands defined in interface
      */
     public static <T> T build(Class<T> interfaceClazz) {
